@@ -112,3 +112,41 @@ func (es *Elastic) Query(ctx context.Context, req *proto.QueryRequest, rsp *prot
 
 	return nil
 }
+
+// CreateIndexWithSettings srv handler, create a ES index with its settings
+func (es *Elastic) CreateIndexWithSettings(ctx context.Context, req *proto.CreateIndexWithSettingsRequest, rsp *proto.CreateIndexWithSettingsResponse) error {
+	if len(req.Index) <= 0 {
+		return errors.BadRequest("go.micro.srv.elastic.Elastic.CreateIndexWithSettings", "index required")
+	}
+
+	if len(req.Settings) <= 0 {
+		return errors.BadRequest("go.micro.srv.elastic.Elastic.CreateIndexWithSettings", "mapping required")
+	}
+
+	if err := elastic.CreateIndexWithSettings(req); err != nil {
+		return errors.InternalServerError("go.micro.srv.elastic.Elastic.CreateIndexWithSettings", err.Error())
+	}
+
+	return nil
+}
+
+// PutMappingFromJSON srv handler, put a mapping into ES
+func (es *Elastic) PutMappingFromJSON(ctx context.Context, req *proto.PutMappingFromJSONRequest, rsp *proto.PutMappingFromJSONResponse) error {
+	if len(req.Index) <= 0 {
+		return errors.BadRequest("go.micro.srv.elastic.Elastic.PutMappingFromJSON", "index required")
+	}
+
+	if len(req.Type) <= 0 {
+		return errors.BadRequest("go.micro.srv.elastic.Elastic.PutMappingFromJSON", "document type required")
+	}
+
+	if len(req.Mapping) <= 0 {
+		return errors.BadRequest("go.micro.srv.elastic.Elastic.PutMappingFromJSON", "mapping required")
+	}
+
+	if err := elastic.PutMappingFromJSON(req); err != nil {
+		return errors.InternalServerError("go.micro.srv.elastic.Elastic.PutMappingFromJSON", err.Error())
+	}
+
+	return nil
+}

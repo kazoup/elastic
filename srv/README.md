@@ -66,3 +66,19 @@ micro query go.micro.srv.elastic Elastic.Query '{"index":"flags", "type": "flag"
 }
 
 ```
+
+
+### CreateIndexWithSettings
+Note: scaping character "\"
+eg) \"pattern\": \"[^\\\\p{L}\\\\d]+\"
+For reference, compare this call with the API call you can find in API Readme. Both works, but API is human friendly.
+```
+micro query go.micro.srv.elastic Elastic.CreateIndexWithSettings '{"index": "filestest", "settings":"{\"settings\": {\"analysis\": {\"analyzer\": { \"split_on_bar\": {\"type\": \"custom\",\"tokenizer\": \"split_on_bar\"}, \"filename_index\": { \"type\": \"custom\", \"filter\": [ \"lowercase\", \"asciifolding\", \"ngram_3_20\" ], \"tokenizer\": \"filename\" } }, \"filter\": { \"ngram_3_20\": { \"type\": \"nGram\", \"min_gram\": \"3\", \"max_gram\": \"20\" } }, \"tokenizer\": { \"split_on_bar\": { \"pattern\": \"[|]\", \"type\": \"pattern\" }, \"filename\": { \"pattern\": \"[^\\\\p{L}\\\\d]+\", \"type\": \"pattern\" } } } } }"}'
+{}
+```
+
+### PutMappingFromJSON
+```
+micro query go.micro.srv.elastic Elastic.PutMappingFromJSON '{"index": "files","type": "file","mapping":"{ESCAPED_STRINGiFY_JSON}"}'
+{}
+```

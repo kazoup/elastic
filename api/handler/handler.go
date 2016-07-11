@@ -198,3 +198,68 @@ func (es *Elastic) Query(ctx context.Context, req *api.Request, rsp *api.Respons
 
 	return nil
 }
+
+// CreateIndexWithSettings API handler, create a ES index with its settings
+func (es *Elastic) CreateIndexWithSettings(ctx context.Context, req *api.Request, rsp *api.Response) error {
+	var err error
+	var input map[string]interface{}
+	var settings []byte
+
+	// Unmarshal unknown JSON
+	if err = json.Unmarshal([]byte(req.Body), &input); err != nil {
+		return errors.BadRequest("go.micro.api.elastic", err.Error())
+	}
+
+	settings, err = json.Marshal(input["settings"])
+
+	srvReq := client.NewRequest(
+		"go.micro.srv.elastic",
+		"Elastic.CreateIndexWithSettings",
+		&elastic.CreateIndexWithSettingsRequest{
+			Index:    fmt.Sprintf("%v", input["index"]),
+			Settings: string(settings),
+		},
+	)
+	srvRsp := &elastic.CreateIndexWithSettingsResponse{}
+	if err = client.Call(ctx, srvReq, srvRsp); err != nil {
+		return err
+	}
+
+	rsp.StatusCode = http.StatusOK
+	rsp.Body = `{}`
+
+	return nil
+}
+
+// PutMappingFromJSON API handler, put a mapping into ES
+func (es *Elastic) PutMappingFromJSON(ctx context.Context, req *api.Request, rsp *api.Response) error {
+	var err error
+	var input map[string]interface{}
+	var mapping []byte
+
+	// Unmarshal unknown JSON
+	if err = json.Unmarshal([]byte(req.Body), &input); err != nil {
+		return errors.BadRequest("go.micro.api.elastic", err.Error())
+	}
+
+	mapping, err = json.Marshal(input["mapping"])
+
+	srvReq := client.NewRequest(
+		"go.micro.srv.elastic",
+		"Elastic.PutMappingFromJSON",
+		&elastic.PutMappingFromJSONRequest{
+			Index:   fmt.Sprintf("%v", input["index"]),
+			Type:    fmt.Sprintf("%v", input["type"]),
+			Mapping: string(mapping),
+		},
+	)
+	srvRsp := &elastic.PutMappingFromJSONResponse{}
+	if err = client.Call(ctx, srvReq, srvRsp); err != nil {
+		return err
+	}
+
+	rsp.StatusCode = http.StatusOK
+	rsp.Body = `{}`
+
+	return nil
+}

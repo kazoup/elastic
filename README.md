@@ -6,6 +6,7 @@ Elasticsearch API with fqdn go.micro.api.elasticsearch
 
 
 Perform agnostic CRUD, search and queryDSL operation within elastic search.
+Set or update elastic search Settings or Mapping.
 
 ## Getting Started
 

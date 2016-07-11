@@ -9,6 +9,8 @@ service Elastic {
   rpc Delete(DeleteRequest) returns (DeleteResponse) {}
   rpc Search(SearchRequest) returns (SearchResponse) {}
   rpc Query(QueryRequest) returns (QueryResponse) {}
+  rpc CreateIndexWithSettings(CreateIndexWithSettingsRequest) returns (CreateIndexWithSettingsResponse) {}
+  rpc PutMappingFromJSON(PutMappingFromJSONRequest) returns (PutMappingFromJSONRequest) {}
 }
 
 message DocRef {
@@ -79,4 +81,23 @@ message QueryRequest {
 
 message QueryResponse {
   string result = 1;
+}
+
+message CreateIndexWithSettingsRequest {
+  string index = 1;
+  string settings = 2;
+}
+
+message CreateIndexWithSettingsResponse {
+
+}
+
+message PutMappingFromJSONRequest {
+  string index = 1;
+  string type = 2;
+  string mapping = 3;
+}
+
+message PutMappingFromJSONResponse {
+
 }

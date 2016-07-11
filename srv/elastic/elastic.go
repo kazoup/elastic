@@ -1,6 +1,7 @@
 package elastic
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	proto "github.com/kazoup/elastic/srv/proto/elastic"
@@ -79,4 +80,32 @@ func Query(sr *proto.QueryRequest) (string, error) {
 	}
 
 	return string(result.RawJSON), nil
+}
+
+// CreateIndexWithSettings creates an ES index with settings
+func CreateIndexWithSettings(r *proto.CreateIndexWithSettingsRequest) error {
+	var settingsMap map[string]interface{}
+
+	if err := json.Unmarshal([]byte(r.Settings), &settingsMap); err != nil {
+		return err
+	}
+	fmt.Println(r.Settings)
+	fmt.Println(settingsMap)
+
+	_, err := conn.CreateIndexWithSettings(r.Index, settingsMap)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// PutMappingFromJSON puts a mapping into ES
+func PutMappingFromJSON(r *proto.PutMappingFromJSONRequest) error {
+	if err := conn.PutMappingFromJSON(r.Index, r.Type, []byte(r.Mapping)); err != nil {
+		return err
+	}
+
+	return nil
 }

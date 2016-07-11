@@ -103,7 +103,15 @@ func CreateIndexWithSettings(r *proto.CreateIndexWithSettingsRequest) error {
 
 // PutMappingFromJSON puts a mapping into ES
 func PutMappingFromJSON(r *proto.PutMappingFromJSONRequest) error {
+	if _, err := conn.CloseIndex(r.Index); err != nil {
+		return err
+	}
+
 	if err := conn.PutMappingFromJSON(r.Index, r.Type, []byte(r.Mapping)); err != nil {
+		return err
+	}
+
+	if _, err := conn.OpenIndex(r.Index); err != nil {
 		return err
 	}
 
